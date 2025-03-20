@@ -17,6 +17,7 @@ export class RadarMilitarComponent{
     this.startRadar();
     this.generatePoints();
     this.generateRadarLines();
+    console.info('Radar militar iniciado');
   }
 
   startRadar() {
@@ -35,13 +36,13 @@ export class RadarMilitarComponent{
           y: 50 + radius * Math.sin(angle)
         };
       });
-    }, 4000); // Generación más espaciada para mayor realismo
+    }, 4000);
   }
 
   generateRadarLines() {
     const centerX = 50;
     const centerY = 50;
-    const radius = 50; // Longitud de las líneas hasta el borde
+    const radius = 50;
   
     this.radarLines = [];
   
