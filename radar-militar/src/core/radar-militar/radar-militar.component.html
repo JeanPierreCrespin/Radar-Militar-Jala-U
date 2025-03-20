@@ -1,6 +1,28 @@
-<div class="container text-center mt-4">
-    <h1 class="text-white">Radar Animado</h1>
-    <div class="radar-container">
-        <canvas #radarCanvas width="300" height="300"></canvas>
+<div class="radar-container">
+    <div class="radar">
+      <!-- Líneas del radar -->
+      <svg class="radar-lines" viewBox="0 0 100 100">
+        <!-- Círculos concéntricos -->
+        <circle cx="50" cy="50" r="20" class="circle"></circle>
+        <circle cx="50" cy="50" r="35" class="circle"></circle>
+        <circle cx="50" cy="50" r="50" class="circle"></circle>
+      
+        <!-- Líneas radiales -->
+        <line *ngFor="let line of radarLines" 
+              x1="50" y1="50" 
+              [attr.x2]="line.x2"
+              [attr.y2]="line.y2"
+              class="line"></line>
+      </svg>
+  
+      <!-- Barrido del radar -->
+      <div class="radar-sweep" [style.transform]="'rotate(' + rotation + 'deg)'"></div>
+  
+      <!-- Puntos en el radar -->
+      <div *ngFor="let point of points" 
+           class="radar-point" 
+           [style.left]="point.x + '%'" 
+           [style.top]="point.y + '%'"></div>
     </div>
-</div>
+  </div>
+  
