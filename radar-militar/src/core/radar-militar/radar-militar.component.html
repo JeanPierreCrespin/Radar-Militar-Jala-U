@@ -1,28 +1,60 @@
 <div class="radar-container">
-    <div class="radar">
-      <!-- Líneas del radar -->
-      <svg class="radar-lines" viewBox="0 0 100 100">
-        <!-- Círculos concéntricos -->
-        <circle cx="50" cy="50" r="20" class="circle"></circle>
-        <circle cx="50" cy="50" r="35" class="circle"></circle>
-        <circle cx="50" cy="50" r="50" class="circle"></circle>
-      
-        <!-- Líneas radiales -->
-        <line *ngFor="let line of radarLines" 
-              x1="50" y1="50" 
-              [attr.x2]="line.x2"
-              [attr.y2]="line.y2"
-              class="line"></line>
-      </svg>
-  
-      <!-- Barrido del radar -->
-      <div class="radar-sweep" [style.transform]="'rotate(' + rotation + 'deg)'"></div>
-  
-      <!-- Puntos en el radar -->
-      <div *ngFor="let point of points" 
-           class="radar-point" 
-           [style.left]="point.x + '%'" 
-           [style.top]="point.y + '%'"></div>
+  <div class="row bg-green text-white mx-3" style="height: 600px">
+    <div class="col-md-12 p-3">
+      <h1 class="text-center">Radar Militar</h1>
+
+      <div class="card" style="width: 18rem">
+        <div class="card-body">
+          <h5 class="card-title">Cual es el patron que se esta usando?</h5>
+          <button *ngFor="let button of dataButtons" class="card my-3" (click)="onValidation(button.name)">
+            {{ button.name }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  
+  <div class="radar">
+    <!-- Líneas del radar -->
+    <svg class="radar-lines" viewBox="0 0 100 100">
+      <!-- Círculos concéntricos -->
+      <circle cx="50" cy="50" r="20" class="circle"></circle>
+      <circle cx="50" cy="50" r="35" class="circle"></circle>
+      <circle cx="50" cy="50" r="50" class="circle"></circle>
+
+      <!-- Líneas radiales -->
+      <line
+        *ngFor="let line of radarLines"
+        x1="50"
+        y1="50"
+        [attr.x2]="line.x2"
+        [attr.y2]="line.y2"
+        class="line"
+      ></line>
+    </svg>
+
+    <!-- Barrido del radar -->
+    <div
+      class="radar-sweep"
+      [style.transform]="'rotate(' + rotation + 'deg)'"
+    ></div>
+
+    <!-- Puntos en el radar -->
+    <div
+      *ngFor="let enemy of dataEnemys"
+      class="radar-point"
+      [style.left]="enemy.x + '%'"
+      [style.top]="enemy.y + '%'"
+    ></div>
+  </div>
+  <div class="row bg-green text-white mx-3" style="height: 600px">
+    <div class="col-md-12 p-3">
+      <div class="card mb-3" style="width: 18rem" *ngFor="let enemy of dataEnemys, let i = index">
+        <div class="card-body">
+          <h5 class="card-title">Enemigo #{{i+1}}</h5>
+          <hr>
+          <p class="bold"> <strong>x:{{enemy.x}} y:{{enemy.y}}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
