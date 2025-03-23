@@ -6,8 +6,8 @@
       <div class="card" style="width: 18rem">
         <div class="card-body">
           <h5 class="card-title">Cual es el patron que se esta usando?</h5>
-          <button *ngFor="let button of dataButtons" class="card my-3" (click)="onValidation(button.name)">
-            {{ button.name }}
+          <button *ngFor="let button of dataButtons" class="card my-3" (click)="onValidation(button.value)">
+            {{ button.label }}
           </button>
         </div>
       </div>
