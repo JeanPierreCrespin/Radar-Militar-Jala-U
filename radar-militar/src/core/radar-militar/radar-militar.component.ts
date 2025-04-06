@@ -18,7 +18,7 @@ interface DataButton {
 })
 export class RadarMilitarComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  level: number = 1;
+  level: number = Number(localStorage.getItem('currentLevel')) || 1;
   rotation = 0;
   scanSpeed = 80;
   matrixSize = 100; // Define el tamaño de la matriz
@@ -59,7 +59,7 @@ export class RadarMilitarComponent implements OnInit {
 
   dataEnemys: { x: number; y: number }[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.openDialog();
@@ -72,11 +72,21 @@ export class RadarMilitarComponent implements OnInit {
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(DialogComponent, { width: '600px', height: '700px' });
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '600px',
+      height: '700px',
+      data: {
+        level: this.level,
+        message: '',
+        buttonLabel: this.level == 1? 'Iniciar Misión': 'Continuar'
+      }
+    }
+    );
 
     dialogRef.afterClosed().subscribe(() => {
       this.route.params.subscribe((params) => {
         this.level = +params['level'];
+        localStorage.setItem('currentLevel', this.level.toString());
         this.dataButtons = this.options[this.level];
         this.startRadar();
         this.generateInitialPoints();
@@ -87,32 +97,39 @@ export class RadarMilitarComponent implements OnInit {
   }
 
   onValidation(selectedPattern: number) {
-    if (!this.validatePattern(selectedPattern)) {
-      this.dialog.open(DialogComponent, {
-        width: '600px',
-        height: '700px',
-        data: { message: 'Perdiste. Patrón incorrecto.' },
-      });
+    const isPatternValid = this.validatePattern(selectedPattern);
+    const dialogConfig = {
+      width: '600px',
+      height: '700px',
+      data: {
+        level: this.level,
+        message: '',
+        buttonLabel: ''
+      },
+    };
+
+    if (!isPatternValid) {
+      localStorage.setItem('currentLevel', this.level.toString());
+      dialogConfig.data.message = 'Perdiste. Patrón incorrecto. ¡Vuelve a intentarlo!';
+      dialogConfig.data.buttonLabel = '¡Volver a intentarlo!';
+      this.dialog.open(DialogComponent, dialogConfig);
       return;
     }
 
     if (this.level === 4) {
-      this.dialog.open(DialogComponent, {
-        width: '600px',
-        height: '700px',
-        data: { message: '¡Ganaste todos los niveles! Eres el ganador.' },
-      });
+      dialogConfig.data.message = '¡Ganaste todos los niveles! Eres el ganador.';
+      dialogConfig.data.buttonLabel = 'Reiniciar juego';
+      this.dialog.open(DialogComponent, dialogConfig);
       return;
     }
 
     this.level++;
     this.dataButtons = this.options[this.level];
-    this.dialog.open(DialogComponent, {
-      width: '600px',
-      height: '700px',
-      data: { message: '¡Ganaste este nivel! Avanzando al siguiente.' },
-    });
+    dialogConfig.data.message = '¡Ganaste este nivel! Avanzando al siguiente.';
+    dialogConfig.data.buttonLabel = 'Continuar';
+    this.dialog.open(DialogComponent, dialogConfig);
   }
+
 
   validatePattern(selectedPattern: number): boolean {
     return selectedPattern === this.responseQuestions[this.level];
@@ -129,6 +146,8 @@ export class RadarMilitarComponent implements OnInit {
 
   updateEnemyPositions() {
     this.intervalId = setInterval(() => {
+
+
       const centerX = this.matrixSize / 2;
       const centerY = this.matrixSize / 2;
 
@@ -141,10 +160,18 @@ export class RadarMilitarComponent implements OnInit {
       const hasLost = this.dataEnemys.some((enemy) => enemy.x === centerX && enemy.y === centerY);
       if (hasLost) {
         clearInterval(this.intervalId);
-        this.dialog.open(DialogComponent, {
+        localStorage.setItem('currentLevel', this.level.toString());
+        const dialogRef = this.dialog.open(DialogComponent, {
           width: '600px',
           height: '700px',
-          data: { message: 'Perdiste. Un enemigo llegó al centro.' },
+          data: {
+            level: this.level,
+            message: 'Perdiste. Un enemigo llegó al centro.',
+            buttonLabel:  '¡Volver a intentarlo!'
+          },
+        });
+        dialogRef.afterClosed().subscribe(() => {
+          this.updateEnemyPositions(); // Reactivar enemigos después del cierre
         });
       }
     }, 2000);
