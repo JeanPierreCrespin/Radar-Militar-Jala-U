@@ -80,10 +80,15 @@ export class RadarMilitarComponent implements OnInit {
         message: '',
         buttonLabel: this.level == 1? 'Iniciar Misión': 'Continuar'
       }
-    }
-    );
+    });
 
     dialogRef.afterClosed().subscribe(() => {
+      // Limpiar cualquier intervalo existente antes de iniciar
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
+
       this.route.params.subscribe((params) => {
         this.level = +params['level'];
         localStorage.setItem('currentLevel', this.level.toString());
@@ -97,6 +102,12 @@ export class RadarMilitarComponent implements OnInit {
   }
 
   onValidation(selectedPattern: number) {
+    // Detener el movimiento de los enemigos
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+
     const isPatternValid = this.validatePattern(selectedPattern);
     const dialogConfig = {
       width: '600px',
@@ -118,7 +129,7 @@ export class RadarMilitarComponent implements OnInit {
 
     if (this.level === 4) {
       dialogConfig.data.message = '¡Ganaste todos los niveles! Eres el ganador.';
-      dialogConfig.data.buttonLabel = 'Reiniciar juego';
+      dialogConfig.data.buttonLabel = 'Volver a Jugar';
       this.dialog.open(DialogComponent, dialogConfig);
       return;
     }
@@ -145,9 +156,12 @@ export class RadarMilitarComponent implements OnInit {
   }
 
   updateEnemyPositions() {
+    // Limpiar cualquier intervalo existente para evitar múltiples intervalos
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+
     this.intervalId = setInterval(() => {
-
-
       const centerX = this.matrixSize / 2;
       const centerY = this.matrixSize / 2;
 
@@ -160,6 +174,7 @@ export class RadarMilitarComponent implements OnInit {
       const hasLost = this.dataEnemys.some((enemy) => enemy.x === centerX && enemy.y === centerY);
       if (hasLost) {
         clearInterval(this.intervalId);
+        this.intervalId = null;
         localStorage.setItem('currentLevel', this.level.toString());
         const dialogRef = this.dialog.open(DialogComponent, {
           width: '600px',
@@ -167,11 +182,14 @@ export class RadarMilitarComponent implements OnInit {
           data: {
             level: this.level,
             message: 'Perdiste. Un enemigo llegó al centro.',
-            buttonLabel:  '¡Volver a intentarlo!'
+            buttonLabel: '¡Volver a intentarlo!'
           },
         });
+
         dialogRef.afterClosed().subscribe(() => {
-          this.updateEnemyPositions(); // Reactivar enemigos después del cierre
+          // Reiniciar el juego con nuevos enemigos, pero no reiniciar el movimiento automáticamente
+          this.generateInitialPoints();
+          // No volver a llamar a updateEnemyPositions() aquí
         });
       }
     }, 2000);
