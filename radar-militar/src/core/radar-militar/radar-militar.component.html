@@ -1,58 +1,111 @@
-<div class="radar-container">
-  <div class="row bg-green text-white mx-3" style="height: 600px">
-    <div class="col-md-12 p-3">
-      <h1 class="text-center">Radar Militar</h1>
+<div class="dashboard-container">
+  <!-- Cabecera con título y nivel -->
+  <div class="header">
+    <div class="title-container">
+      <h1>SISTEMA DE RADAR MILITAR</h1>
+      <div class="level-indicator">NIVEL: {{level}}</div>
+    </div>
+    <div class="status-bar">
+      <span class="status-text">ESTADO: OPERATIVO</span>
+      <span class="coordinates">X: 35.4721° | Y: 78.3891°</span>
+    </div>
+  </div>
 
-      <div class="card" style="width: 18rem">
-        <div class="card-body">
-          <h5 class="card-title">Cual es el patron que se esta usando?</h5>
-          <button *ngFor="let button of dataButtons" class="card my-3" (click)="onValidation(button.value)">
-            {{ button.label }}
+  <div class="main-content">
+    <!-- Panel izquierdo con controles y análisis de patrones -->
+    <div class="control-panel">
+      <div class="panel-header">
+        <span class="panel-title">ANÁLISIS DE PATRONES</span>
+        <span class="blinking-dot"></span>
+      </div>
+      
+      <div class="pattern-analysis">
+        <h5 class="analysis-title">IDENTIFICAR PATRÓN DE MOVIMIENTO ENEMIGO</h5>
+        <div class="pattern-options">
+          <button *ngFor="let button of dataButtons" 
+                  class="pattern-button" 
+                  (click)="onValidation(button.value)">
+            <div class="button-content">
+              <div class="button-label">{{ button.label }}</div>
+              <div class="select-text">SELECCIONAR</div>
+            </div>
           </button>
         </div>
       </div>
     </div>
-  </div>
-  <div class="radar">
-    <!-- Líneas del radar -->
-    <svg class="radar-lines" viewBox="0 0 100 100">
-      <!-- Círculos concéntricos -->
-      <circle cx="50" cy="50" r="20" class="circle"></circle>
-      <circle cx="50" cy="50" r="35" class="circle"></circle>
-      <circle cx="50" cy="50" r="50" class="circle"></circle>
 
-      <!-- Líneas radiales -->
-      <line
-        *ngFor="let line of radarLines"
-        x1="50"
-        y1="50"
-        [attr.x2]="line.x2"
-        [attr.y2]="line.y2"
-        class="line"
-      ></line>
-    </svg>
+    <!-- Pantalla central del radar -->
+    <div class="radar-display">
+      <div class="radar">
+        <!-- Líneas del radar -->
+        <svg class="radar-lines" viewBox="0 0 100 100">
+          <!-- Círculos concéntricos -->
+          <circle cx="50" cy="50" r="15" class="circle"></circle>
+          <circle cx="50" cy="50" r="30" class="circle"></circle>
+          <circle cx="50" cy="50" r="45" class="circle"></circle>
+          
+          <!-- Retícula central -->
+          <line x1="50" y1="45" x2="50" y2="55" class="reticle"></line>
+          <line x1="45" y1="50" x2="55" y2="50" class="reticle"></line>
+          
+          <!-- Líneas radiales -->
+          <line
+            *ngFor="let line of radarLines"
+            x1="50"
+            y1="50"
+            [attr.x2]="line.x2"
+            [attr.y2]="line.y2"
+            class="line"
+          ></line>
+          
+          <!-- Marcadores de ángulos -->
+          <text x="50" y="5" class="angle-marker">0°</text>
+          <text x="95" y="50" class="angle-marker">90°</text>
+          <text x="50" y="95" class="angle-marker">180°</text>
+          <text x="5" y="50" class="angle-marker">270°</text>
+        </svg>
 
-    <!-- Barrido del radar -->
-    <div
-      class="radar-sweep"
-      [style.transform]="'rotate(' + rotation + 'deg)'"
-    ></div>
+        <!-- Barrido del radar -->
+        <div
+          class="radar-sweep"
+          [style.transform]="'rotate(' + rotation + 'deg)'"
+        ></div>
 
-    <!-- Puntos en el radar -->
-    <div
-      *ngFor="let enemy of dataEnemys"
-      class="radar-point"
-      [style.left]="enemy.x + '%'"
-      [style.top]="enemy.y + '%'"
-    ></div>
-  </div>
-  <div class="row bg-green text-white mx-3" style="height: 600px">
-    <div class="col-md-12 p-3">
-      <div class="card mb-3" style="width: 18rem" *ngFor="let enemy of dataEnemys, let i = index">
-        <div class="card-body">
-          <h5 class="card-title">Enemigo #{{i+1}}</h5>
-          <hr>
-          <p class="bold"> <strong>x:{{enemy.x}} y:{{enemy.y}}</strong></p>
+        <!-- Puntos en el radar -->
+        <div
+          *ngFor="let enemy of dataEnemys"
+          class="radar-point"
+          [style.left]="enemy.x + '%'"
+          [style.top]="enemy.y + '%'"
+        ></div>
+      </div>
+      
+      <div class="radar-info">
+        <span class="scan-status">ESCANEANDO SECTOR</span>
+        <span class="scan-speed">VELOCIDAD: {{scanSpeed}}ms</span>
+      </div>
+    </div>
+
+    <!-- Panel derecho con información de enemigos -->
+    <div class="enemy-tracking-panel">
+      <div class="panel-header">
+        <span class="panel-title">SEGUIMIENTO DE OBJETIVOS</span>
+        <span class="blinking-dot red"></span>
+      </div>
+      
+      <div class="enemy-list">
+        <div class="enemy-card" *ngFor="let enemy of dataEnemys, let i = index">
+          <div class="enemy-header">
+            <span class="enemy-id">OBJETIVO #{{i+1}}</span>
+            <span class="enemy-threat">AMENAZA</span>
+          </div>
+          <div class="enemy-coordinates">
+            <div class="coordinate">X: <strong>{{enemy.x}}</strong></div>
+            <div class="coordinate">Y: <strong>{{enemy.y}}</strong></div>
+          </div>
+          <div class="distance-indicator">
+            <div class="distance-bar" [style.width]="calcularDistanciaPorcentaje(enemy.x, enemy.y) + '%'"></div>
+          </div>
         </div>
       </div>
     </div>

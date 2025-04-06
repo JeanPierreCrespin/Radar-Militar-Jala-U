@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogComponent } from './dialog/dialog.component';
+import {CommonModule} from '@angular/common';
+import {Component, inject, OnInit} from '@angular/core';
+import {ActivatedRoute, RouterLink} from '@angular/router';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {DialogComponent} from './dialog/dialog.component';
 
 interface DataButton {
   label: string;
@@ -210,5 +210,21 @@ export class RadarMilitarComponent implements OnInit {
         y2: centerY + radius * Math.sin(angleRad),
       });
     }
+  }
+
+  // Método para calcular el porcentaje de distancia para la barra de progreso
+  calcularDistanciaPorcentaje(x: number, y: number): number {
+    // Coordenadas del centro del radar
+    const centerX = 50;
+    const centerY = 50;
+
+    // Cálculo de la distancia euclidiana
+    const dx = x - centerX;
+    const dy = y - centerY;
+    const distancia = Math.sqrt(dx * dx + dy * dy);
+
+    // Convertir la distancia a un porcentaje (valores más pequeños para enemigos más cercanos)
+    // 70.71 es aproximadamente la distancia máxima desde el centro a una esquina (50*sqrt(2))
+    return Math.max(0, Math.min(100, 100 - (distancia * 100 / 70.71)));
   }
 }
