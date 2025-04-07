@@ -8,6 +8,7 @@
     <div class="status-bar">
       <span class="status-text">ESTADO: OPERATIVO</span>
       <span class="coordinates">X: 35.4721° | Y: 78.3891°</span>
+      <a class="dev-button" routerLink="/equipo-proyecto">PROYECTO ACADÉMICO</a>
     </div>
   </div>
 
@@ -83,6 +84,15 @@
       <div class="radar-info">
         <span class="scan-status">ESCANEANDO SECTOR</span>
         <span class="scan-speed">VELOCIDAD: {{scanSpeed}}ms</span>
+      </div>
+      
+      <!-- Panel de análisis de patrón con pistas -->
+      <div class="pattern-hint-container">
+        <div class="hint-header">
+          <span class="hint-title">ANÁLISIS DE TRAYECTORIA</span>
+          <span class="hint-signal blinking-dot"></span>
+        </div>
+        <div class="hint-content">{{ currentHint }}</div>
       </div>
     </div>
 

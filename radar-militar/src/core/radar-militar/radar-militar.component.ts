@@ -26,99 +26,131 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
   intervalId: any;
   radarIntervalId: any;
 
+  // Pistas sobre el patrón actual
+  currentHint: string = '';
+  hintUpdateCounter: number = 0;
+
+  // Pistas para cada nivel
+  patternHints: { [key: number]: string[] } = {
+    1: [
+      "Los objetivos se mueven en línea recta hacia el centro.",
+      "La velocidad de movimiento es constante en ambos ejes X e Y.",
+      "Cada enemigo mantiene su trayectoria sin desviaciones.",
+      "Se observa un movimiento directo, sin oscilaciones ni giros."
+    ],
+    2: [
+      "Los objetivos se acercan en trayectorias curvas.",
+      "El radio de aproximación disminuye mientras el ángulo aumenta.",
+      "Los objetivos mantienen una trayectoria espiral.",
+      "El movimiento combina reducción de radio y rotación angular."
+    ],
+    3: [
+      "Los objetivos parecen ser atraídos por una fuerza central.",
+      "La velocidad aumenta a medida que se acercan al centro.",
+      "Todos los objetivos convergen hacia el punto central.",
+      "El comportamiento es similar a un efecto gravitacional."
+    ],
+    4: [
+      "Los objetivos experimentan una fuerte atracción hacia el centro.",
+      "La aceleración aumenta con la proximidad al punto central.",
+      "Los enemigos siguen trayectorias de atracción directa.",
+      "El movimiento sigue un patrón gravitacional avanzado."
+    ]
+  };
+
   dataButtons: DataButton[] = [];
 
   options: { [key: number]: DataButton[] } = {
     1: [
-      { 
-        label: 'MOVIMIENTO LINEAL DIRECTO\n' + 
-               'x(t) = x₀ - t × velocidad\n' + 
+      {
+        label: 'MOVIMIENTO LINEAL DIRECTO\n' +
+               'x(t) = x₀ - t × velocidad\n' +
                'y(t) = y₀ - t × velocidad\n' +
                'Los objetivos se mueven directamente hacia el centro.',
-        value: 1 
+        value: 1
       },
-      { 
-        label: 'MOVIMIENTO ORBITAL\n' + 
-               'x(t) = x₀ + radio × cos(t × velocidadAngular)\n' + 
+      {
+        label: 'MOVIMIENTO ORBITAL\n' +
+               'x(t) = x₀ + radio × cos(t × velocidadAngular)\n' +
                'y(t) = y₀ + radio × sin(t × velocidadAngular)\n' +
                'Los objetivos orbitan alrededor del centro.',
-        value: 2 
+        value: 2
       },
-      { 
-        label: 'MOVIMIENTO ZIGZAG\n' + 
-               'x(t) = x₀ - t × velocidad + oscilación × sin(t)\n' + 
+      {
+        label: 'MOVIMIENTO ZIGZAG\n' +
+               'x(t) = x₀ - t × velocidad + oscilación × sin(t)\n' +
                'y(t) = y₀ - t × velocidad + oscilación × cos(t)\n' +
                'Los objetivos avanzan en patrón zigzag.',
-        value: 3 
+        value: 3
       },
     ],
     2: [
-      { 
-        label: 'PATRÓN ACELERADO\n' + 
-               'x(t) = x₀ - t² × aceleración\n' + 
+      {
+        label: 'PATRÓN ACELERADO\n' +
+               'x(t) = x₀ - t² × aceleración\n' +
                'y(t) = y₀ - t² × aceleración\n' +
                'Los objetivos aumentan su velocidad con el tiempo.',
-        value: 1 
+        value: 1
       },
-      { 
-        label: 'PATRÓN ALEATORIO\n' + 
-               'x(t) = x₀ - t × velocidad + aleatorio()\n' + 
+      {
+        label: 'PATRÓN ALEATORIO\n' +
+               'x(t) = x₀ - t × velocidad + aleatorio()\n' +
                'y(t) = y₀ - t × velocidad + aleatorio()\n' +
                'Los objetivos se mueven con componente aleatoria.',
-        value: 2 
+        value: 2
       },
-      { 
-        label: 'PATRÓN ESPIRAL\n' + 
-               'radio(t) = radio₀ - t × velocidad\n' + 
+      {
+        label: 'PATRÓN ESPIRAL\n' +
+               'radio(t) = radio₀ - t × velocidad\n' +
                'ángulo(t) = ángulo₀ + t × velocidadAngular\n' +
                'Los objetivos se acercan en espiral al centro.',
-        value: 3 
+        value: 3
       },
     ],
     3: [
-      { 
-        label: 'MOVIMIENTO PULSANTE\n' + 
-               'x(t) = x₀ - t × velocidad × (1 + sin(t))\n' + 
+      {
+        label: 'MOVIMIENTO PULSANTE\n' +
+               'x(t) = x₀ - t × velocidad × (1 + sin(t))\n' +
                'y(t) = y₀ - t × velocidad × (1 + cos(t))\n' +
                'Los objetivos avanzan con velocidad variable.',
-        value: 1 
+        value: 1
       },
-      { 
-        label: 'ATRACCIÓN GRAVITACIONAL\n' + 
-               'x(t) = x₀ - t × fuerzaAtracción × (x₀ - xCentro)/distancia\n' + 
+      {
+        label: 'ATRACCIÓN GRAVITACIONAL\n' +
+               'x(t) = x₀ - t × fuerzaAtracción × (x₀ - xCentro)/distancia\n' +
                'y(t) = y₀ - t × fuerzaAtracción × (y₀ - yCentro)/distancia\n' +
                'Los objetivos son atraídos por el centro.',
-        value: 2 
+        value: 2
       },
-      { 
-        label: 'MOVIMIENTO EVASIVO\n' + 
-               'x(t) = x₀ - t × velocidad + evasión(t)\n' + 
+      {
+        label: 'MOVIMIENTO EVASIVO\n' +
+               'x(t) = x₀ - t × velocidad + evasión(t)\n' +
                'y(t) = y₀ - t × velocidad + evasión(t)\n' +
                'Los objetivos intentan evadir la intercepción.',
-        value: 3 
+        value: 3
       },
     ],
     4: [
-      { 
-        label: 'ATRACCIÓN GRAVITACIONAL AVANZADA\n' + 
-               'x(t) = x₀ - t × fuerzaAtracción × (x₀ - xCentro)/distancia\n' + 
+      {
+        label: 'ATRACCIÓN GRAVITACIONAL AVANZADA\n' +
+               'x(t) = x₀ - t × fuerzaAtracción × (x₀ - xCentro)/distancia\n' +
                'y(t) = y₀ - t × fuerzaAtracción × (y₀ - yCentro)/distancia\n' +
                'Los objetivos aceleran hacia el centro.',
-        value: 1 
+        value: 1
       },
-      { 
-        label: 'PATRÓN REFLECTIVO\n' + 
-               'x(t) = x₀ + (−1)^rebotes × t × velocidad\n' + 
+      {
+        label: 'PATRÓN REFLECTIVO\n' +
+               'x(t) = x₀ + (−1)^rebotes × t × velocidad\n' +
                'y(t) = y₀ + (−1)^rebotes × t × velocidad\n' +
                'Los objetivos cambian dirección al rebotar.',
-        value: 2 
+        value: 2
       },
-      { 
-        label: 'FORMACIÓN TÁCTICA\n' + 
-               'x(t) = x₀ - t × velocidad + formación(índice, t)\n' + 
+      {
+        label: 'FORMACIÓN TÁCTICA\n' +
+               'x(t) = x₀ - t × velocidad + formación(índice, t)\n' +
                'y(t) = y₀ - t × velocidad + formación(índice, t)\n' +
                'Los objetivos mantienen formación mientras avanzan.',
-        value: 3 
+        value: 3
       },
     ],
   };
@@ -175,6 +207,11 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
         this.level = +params['level'];
         localStorage.setItem('currentLevel', this.level.toString());
         this.dataButtons = this.options[this.level];
+
+        // Inicializar pistas
+        this.hintUpdateCounter = 0;
+        this.currentHint = "Analizando patrones de movimiento...";
+
         this.startRadar();
         this.generateInitialPoints();
         this.updateEnemyPositions();
@@ -240,7 +277,7 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
   }
 
   generateInitialPoints() {
-    const numEnemies = 4;
+    const numEnemies = 5;
     this.dataEnemys = Array.from({ length: numEnemies }, () => {
       const x = Math.floor(Math.random() * this.matrixSize);
       const y = Math.floor(Math.random() * this.matrixSize);
@@ -255,6 +292,10 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
       this.intervalId = null;
     }
 
+    // Reiniciar contador de pistas
+    this.hintUpdateCounter = 0;
+    this.currentHint = "Analizando patrones de movimiento...";
+
     this.intervalId = setInterval(() => {
       const centerX = this.matrixSize / 2;
       const centerY = this.matrixSize / 2;
@@ -264,6 +305,18 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
         const newY = Math.round(Math.max(0, Math.min(this.matrixSize, enemy.y - Math.sign(enemy.y - centerY))));
         return { x: newX, y: newY };
       });
+
+      // Actualizar pista cada ciertos ciclos
+      this.hintUpdateCounter++;
+      if (this.hintUpdateCounter % 3 === 0 && this.patternHints[this.level]) {
+        const hintIndex = Math.min(
+          Math.floor(this.hintUpdateCounter / 3) - 1,
+          this.patternHints[this.level].length - 1
+        );
+        if (hintIndex >= 0) {
+          this.currentHint = this.patternHints[this.level][hintIndex];
+        }
+      }
 
       const hasLost = this.dataEnemys.some((enemy) => enemy.x === centerX && enemy.y === centerY);
       if (hasLost) {

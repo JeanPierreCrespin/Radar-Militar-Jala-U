@@ -1,0 +1,71 @@
+<div class="equipo-proyecto-container">
+  <div class="header">
+    <h1>PROYECTO ACADÉMICO - MATEMÁTICAS DISCRETAS</h1>
+    <a class="back-button" routerLink="/radar/1">VOLVER AL RADAR</a>
+  </div>
+
+  <!-- Sección sobre la materia -->
+  <div class="course-info">
+    <div class="course-header">
+      <div class="course-icon">
+        <span class="material-icon">&#x2211;</span>
+      </div>
+      <div class="course-title">
+        <h2>MATEMÁTICAS DISCRETAS</h2>
+        <div class="course-code">JALA-2025</div>
+      </div>
+    </div>
+
+    <div class="course-description">
+      <p>Proyecto desarrollado como parte del curso de Matemáticas Discretas en Jala University. Este sistema de radar militar aplica principios matemáticos de patrones, secuencias y teoría de grafos para la detección y análisis de objetivos.</p>
+    </div>
+
+    <div class="teacher-info">
+      <div class="teacher-avatar">
+        <span>LF</span>
+      </div>
+      <div class="teacher-details">
+        <h3 class="teacher-name">Luz Flores</h3>
+        <div class="teacher-title">Académica de Jala University</div>
+        <div class="teacher-description">Docente a cargo del curso de Matemáticas Discretas y supervisora del proyecto de Radar Militar.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider">
+    <div class="divider-line"></div>
+    <div class="divider-text">EQUIPO DE DESARROLLO</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="desarrolladores-grid">
+    <div class="desarrollador-card" *ngFor="let dev of desarrolladores">
+      <div class="dev-header">
+        <div class="dev-avatar">
+          <span>{{dev.avatar}}</span>
+        </div>
+        <div class="dev-title">
+          <h2 class="dev-nombre">{{dev.nombre}}</h2>
+          <div class="dev-pais">
+            <span class="pais-tag">{{dev.pais}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dev-role">
+        <span class="role-tag">{{dev.rol}}</span>
+      </div>
+
+      <div class="dev-info">
+        <div class="info-item">
+          <span class="label">SIS:</span>
+          <span class="value">{{dev.sis}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">CORREO:</span>
+          <span class="value">{{dev.correo}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
