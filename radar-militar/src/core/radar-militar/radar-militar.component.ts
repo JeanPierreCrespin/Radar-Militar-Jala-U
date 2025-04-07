@@ -71,7 +71,7 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
     if (this.radarIntervalId) {
       clearInterval(this.radarIntervalId);
     }
-    
+
     // Iniciar nuevo barrido
     this.radarIntervalId = setInterval(() => {
       this.rotation = (this.rotation + 2) % 360;
@@ -80,11 +80,14 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
 
   openDialog() {
     const dialogRef = this.dialog.open(DialogComponent, {
-      width: '600px',
-      height: '700px',
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      panelClass: 'fullscreen-dialog',
       data: {
         level: this.level,
-        message: '',
+        message: 'Preparando coordenadas de escaneo...',
         buttonLabel: this.level == 1? 'Iniciar Misión': 'Continuar'
       }
     });
@@ -117,8 +120,11 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
 
     const isPatternValid = this.validatePattern(selectedPattern);
     const dialogConfig = {
-      width: '600px',
-      height: '700px',
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      panelClass: 'fullscreen-dialog',
       data: {
         level: this.level,
         message: '',
@@ -131,7 +137,7 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
       dialogConfig.data.message = 'Perdiste. Patrón incorrecto. ¡Vuelve a intentarlo!';
       dialogConfig.data.buttonLabel = '¡Volver a intentarlo!';
       const dialogRef = this.dialog.open(DialogComponent, dialogConfig);
-      
+
       // Reactivar el movimiento de enemigos cuando se cierra el diálogo
       dialogRef.afterClosed().subscribe(() => {
         this.generateInitialPoints();
@@ -191,8 +197,11 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
         this.intervalId = null;
         localStorage.setItem('currentLevel', this.level.toString());
         const dialogRef = this.dialog.open(DialogComponent, {
-          width: '600px',
-          height: '700px',
+          width: '100vw',
+          height: '100vh',
+          maxWidth: '100vw',
+          maxHeight: '100vh',
+          panelClass: 'fullscreen-dialog',
           data: {
             level: this.level,
             message: 'Perdiste. Un enemigo llegó al centro.',
@@ -248,7 +257,7 @@ export class RadarMilitarComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
-    
+
     if (this.radarIntervalId) {
       clearInterval(this.radarIntervalId);
       this.radarIntervalId = null;

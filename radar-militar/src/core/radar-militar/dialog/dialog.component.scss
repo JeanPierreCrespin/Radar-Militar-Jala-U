@@ -1,10 +1,165 @@
-.bg-green {
-    background: green;
-  }
+// Variables
+$primary-color: #0fce29;
+$dark-color: #001410;
+$light-color: #e0ffe0;
+$accent-color: #ff3e3e;
+$bg-color: #001008;
 
- ::ng-deep .cdk-overlay-dark-backdrop {
-    background-color: rgba(0, 0, 0, 1);
+.bg-green {
+  background: radial-gradient(circle at center, rgba(0, 40, 20, 0.9) 0%, rgba(0, 25, 15, 0.95) 50%, rgba(0, 10, 5, 1) 100%);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+::ng-deep .cdk-overlay-dark-backdrop {
+  background-color: rgba(0, 0, 0, 1);
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+  overflow: hidden;
+}
+
+// Estilos para diálogo a pantalla completa
+::ng-deep .fullscreen-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 0 !important;
   }
-  ::ng-deep mat-mdc-dialog-surface{
-    overflow: hidden;
+  
+  .mat-mdc-dialog-surface {
+    border-radius: 0 !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
   }
+}
+
+// Asegurar que el contenedor del diálogo ocupa todo el espacio
+.container-fluid {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+}
+
+// Añadir algo de espacio para el contenido interno
+.dialog-content {
+  padding: 2rem;
+  height: 100%;
+}
+
+// Estilos de texto y elementos
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 700;
+  text-shadow: 0 0 15px rgba($primary-color, 0.8);
+  margin-bottom: 2rem;
+}
+
+.level-indicator {
+  display: inline-block;
+  font-size: 1.5rem;
+  color: $primary-color;
+  background: rgba($dark-color, 0.7);
+  padding: 10px 20px;
+  border: 2px solid $primary-color;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba($primary-color, 0.5);
+}
+
+.message-box {
+  background: rgba($dark-color, 0.6);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid $primary-color;
+  text-shadow: 0 0 5px rgba($primary-color, 0.5);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.radar-image {
+  max-width: 450px;
+  width: 80%;
+  filter: drop-shadow(0 0 15px rgba($primary-color, 0.6)) hue-rotate(20deg);
+  animation: pulse 3s infinite;
+}
+
+.action-button {
+  position: relative;
+  background: linear-gradient(to bottom, rgba($dark-color, 0.8), rgba($dark-color, 0.9));
+  color: $primary-color;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 50px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid $primary-color;
+  box-shadow: 0 0 15px rgba($primary-color, 0.3);
+  
+  .button-text {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .button-halo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba($primary-color, 0.3) 0%, rgba($primary-color, 0) 70%);
+    opacity: 0;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover {
+    background: rgba($primary-color, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba($primary-color, 0.5);
+    
+    .button-halo {
+      opacity: 1;
+      animation: pulse 2s infinite;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Animaciones
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+// Media queries para responsividad
+@media (max-width: 768px) {
+  .dialog-content {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  .level-indicator {
+    font-size: 1.2rem;
+  }
+  
+  .message-box {
+    font-size: 1.1rem;
+  }
+}
