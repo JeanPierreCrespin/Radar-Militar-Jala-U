@@ -146,22 +146,34 @@ $terminal-font: 'Courier New', monospace;
   background: rgba($dark-color, 0.8);
   border: 1px solid rgba($primary-color, 0.5);
   color: $light-color;
-  padding: 12px;
+  padding: 15px;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
   font-family: $terminal-font;
   white-space: pre-line;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
   
   .button-content {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    height: 100%;
   }
   
   .button-label {
     font-size: 0.9rem;
+    
+    &:first-line {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: $primary-color;
+      margin-bottom: 5px;
+      display: block;
+    }
   }
   
   .select-text {
@@ -170,15 +182,21 @@ $terminal-font: 'Courier New', monospace;
     padding: 3px 8px;
     background: rgba($primary-color, 0.1);
     border-radius: 3px;
+    margin-top: auto;
   }
   
   &:hover {
-    background: rgba($primary-color, 0.2);
+    background: rgba($primary-color, 0.15);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 8px rgba($primary-color, 0.4);
+    border-color: $primary-color;
     
     .select-text {
       background: rgba($primary-color, 0.3);
+    }
+    
+    .button-label:first-line {
+      text-shadow: 0 0 8px rgba($primary-color, 0.8);
     }
   }
   

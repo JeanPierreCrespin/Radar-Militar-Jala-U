@@ -4,7 +4,7 @@
       <div class="col-md-12 text-center">
         <h1 class="text-white display-4 mb-4">SISTEMA DE RADAR MILITAR</h1>
         <div class="level-indicator mb-3">NIVEL: {{level}}</div>
-        <h2 class="text-white message-box mb-5">{{mensaje}}</h2>
+        <h2 class="text-white message-box mb-5" [ngClass]="{'error-message': isError}">{{mensaje}}</h2>
         
         <div class="col-md-12 d-flex justify-content-center mb-5">
           <img

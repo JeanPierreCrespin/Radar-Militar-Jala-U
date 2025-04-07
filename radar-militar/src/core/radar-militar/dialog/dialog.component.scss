@@ -3,6 +3,8 @@ $primary-color: #0fce29;
 $dark-color: #001410;
 $light-color: #e0ffe0;
 $accent-color: #ff3e3e;
+$error-color: #ff2222;
+$warning-glow: rgba(255, 0, 0, 0.6);
 $bg-color: #001008;
 
 .bg-green {
@@ -79,6 +81,17 @@ h1 {
   text-shadow: 0 0 5px rgba($primary-color, 0.5);
   max-width: 800px;
   margin: 0 auto;
+  transition: all 0.3s ease;
+  
+  // Estilo para mensajes de error
+  &.error-message {
+    color: $error-color;
+    background: rgba($dark-color, 0.7);
+    border-left: 4px solid $error-color;
+    text-shadow: 0 0 8px $warning-glow;
+    box-shadow: 0 0 15px rgba($error-color, 0.2);
+    animation: error-pulse 2s infinite;
+  }
 }
 
 .radar-image {
@@ -143,6 +156,13 @@ h1 {
   0% { opacity: 0.6; }
   50% { opacity: 1; }
   100% { opacity: 0.6; }
+}
+
+// Animación específica para mensajes de error
+@keyframes error-pulse {
+  0% { border-left-color: $error-color; text-shadow: 0 0 8px rgba($error-color, 0.5); }
+  50% { border-left-color: darken($error-color, 20%); text-shadow: 0 0 15px rgba($error-color, 0.8); }
+  100% { border-left-color: $error-color; text-shadow: 0 0 8px rgba($error-color, 0.5); }
 }
 
 // Media queries para responsividad

@@ -7,6 +7,7 @@ interface DialogData {
   message: string;
   buttonLabel: string;
   level: number;
+  isError?: boolean;
 }
 
 @Component({
@@ -35,6 +36,18 @@ export class DialogComponent {
 
   get level(): number {
     return this.data?.level ?? 1;
+  }
+
+  // Método para verificar si es un mensaje de error
+  get isError(): boolean {
+    // Si la propiedad isError está definida, usarla directamente
+    if (this.data.isError !== undefined) {
+      return this.data.isError;
+    }
+    // De lo contrario, detectar automáticamente basado en el texto del mensaje
+    return this.mensaje.includes('Perdiste') || 
+           this.mensaje.includes('enemigo llegó') || 
+           this.mensaje.includes('incorrecto');
   }
 
   // Método que maneja la acción del botón del diálogo
