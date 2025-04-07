@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {DialogComponent} from './dialog/dialog.component';
@@ -16,7 +16,7 @@ interface DataButton {
   styleUrl: './radar-militar.component.scss',
   standalone: true,
 })
-export class RadarMilitarComponent implements OnInit {
+export class RadarMilitarComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   level: number = Number(localStorage.getItem('currentLevel')) || 1;
   rotation = 0;
@@ -24,6 +24,7 @@ export class RadarMilitarComponent implements OnInit {
   matrixSize = 100; // Define el tamaño de la matriz
   radarLines: { angle: number; x2: number; y2: number }[] = [];
   intervalId: any;
+  radarIntervalId: any;
 
   dataButtons: DataButton[] = [];
 
@@ -66,7 +67,13 @@ export class RadarMilitarComponent implements OnInit {
   }
 
   startRadar() {
-    setInterval(() => {
+    // Detener el barrido anterior si existe
+    if (this.radarIntervalId) {
+      clearInterval(this.radarIntervalId);
+    }
+    
+    // Iniciar nuevo barrido
+    this.radarIntervalId = setInterval(() => {
       this.rotation = (this.rotation + 2) % 360;
     }, this.scanSpeed);
   }
@@ -123,7 +130,13 @@ export class RadarMilitarComponent implements OnInit {
       localStorage.setItem('currentLevel', this.level.toString());
       dialogConfig.data.message = 'Perdiste. Patrón incorrecto. ¡Vuelve a intentarlo!';
       dialogConfig.data.buttonLabel = '¡Volver a intentarlo!';
-      this.dialog.open(DialogComponent, dialogConfig);
+      const dialogRef = this.dialog.open(DialogComponent, dialogConfig);
+      
+      // Reactivar el movimiento de enemigos cuando se cierra el diálogo
+      dialogRef.afterClosed().subscribe(() => {
+        this.generateInitialPoints();
+        this.updateEnemyPositions();
+      });
       return;
     }
 
@@ -159,6 +172,7 @@ export class RadarMilitarComponent implements OnInit {
     // Limpiar cualquier intervalo existente para evitar múltiples intervalos
     if (this.intervalId) {
       clearInterval(this.intervalId);
+      this.intervalId = null;
     }
 
     this.intervalId = setInterval(() => {
@@ -187,9 +201,9 @@ export class RadarMilitarComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(() => {
-          // Reiniciar el juego con nuevos enemigos, pero no reiniciar el movimiento automáticamente
+          // Regenerar enemigos y reactivar su movimiento
           this.generateInitialPoints();
-          // No volver a llamar a updateEnemyPositions() aquí
+          this.updateEnemyPositions();
         });
       }
     }, 2000);
@@ -226,5 +240,18 @@ export class RadarMilitarComponent implements OnInit {
     // Convertir la distancia a un porcentaje (valores más pequeños para enemigos más cercanos)
     // 70.71 es aproximadamente la distancia máxima desde el centro a una esquina (50*sqrt(2))
     return Math.max(0, Math.min(100, 100 - (distancia * 100 / 70.71)));
+  }
+
+  ngOnDestroy() {
+    // Limpiar todos los intervalos al destruir el componente
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    
+    if (this.radarIntervalId) {
+      clearInterval(this.radarIntervalId);
+      this.radarIntervalId = null;
+    }
   }
 }
