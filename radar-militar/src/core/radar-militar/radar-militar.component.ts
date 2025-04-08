@@ -146,6 +146,14 @@ export class RadarMilitarComponent implements OnInit {
           height: '700px',
           data: { message: 'Perdiste. Un enemigo llegó al centro.' },
         });
+
+        //reinicio automatico despues de 3s
+        setTimeout(() => {
+          this.level = 1;
+          this.dataButtons = this.options[this.level]; // actualiza los botones
+          this.generateInitialPoints(); // genera nuevos enemigos
+          this.updateEnemyPositions(); // reactiva el movimiento
+        },300);
       }
     }, 2000);
   }
