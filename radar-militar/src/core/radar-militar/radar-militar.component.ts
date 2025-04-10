@@ -91,16 +91,26 @@ export class RadarMilitarComponent implements OnInit {
       this.dialog.open(DialogComponent, {
         width: '600px',
         height: '700px',
-        data: { message: 'Perdiste. Patrón incorrecto.' },
+        data: { message: 'Perdiste. Patrón incorrecto.',
+              onContinue: () => {
+                this.generateInitialPoints(); // Regenera enemigos SIN cambiar de nivel
+              }
+          }
       });
-      return;
+      return; 
     }
 
     if (this.level === 4) {
       this.dialog.open(DialogComponent, {
         width: '600px',
         height: '700px',
-        data: { message: '¡Ganaste todos los niveles! Eres el ganador.' },
+        data: { message: '¡Ganaste todos los niveles! Eres el ganador.',
+              onContinue: () => {
+                this.level = 1; // reinicia el contador
+                this.router.navigate(['/radar/1']); // redirige a URL
+                this.generateInitialPoints(); // prepara nuevo juego
+              }
+           }     
       });
       return;
     }
@@ -144,16 +154,13 @@ export class RadarMilitarComponent implements OnInit {
         this.dialog.open(DialogComponent, {
           width: '600px',
           height: '700px',
-          data: { message: 'Perdiste. Un enemigo llegó al centro.' },
+          data: { message: 'Perdiste. Un enemigo llegó al centro.',
+              onContinue: () => {
+              this.generateInitialPoints(); // Regenera enemigos
+               this.updateEnemyPositions(); // Reactiva el movimiento
+            }
+          } 
         });
-
-        //reinicio automatico despues de 3s
-        setTimeout(() => {
-          this.level = 1;
-          this.dataButtons = this.options[this.level]; // actualiza los botones
-          this.generateInitialPoints(); // genera nuevos enemigos
-          this.updateEnemyPositions(); // reactiva el movimiento
-        },300);
       }
     }, 2000);
   }
