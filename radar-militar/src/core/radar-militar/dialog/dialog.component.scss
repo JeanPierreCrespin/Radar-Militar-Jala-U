@@ -1,0 +1,10 @@
+.bg-green {
+    background: green;
+  }
+
+ ::ng-deep .cdk-overlay-dark-backdrop {
+    background-color: rgba(0, 0, 0, 1);
+  }
+  ::ng-deep mat-mdc-dialog-surface{
+    overflow: hidden;
+  }
