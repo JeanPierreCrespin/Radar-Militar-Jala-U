@@ -1,7 +1,5 @@
 # Radar Militar - Proyecto Académico de Matemáticas Discretas
 
-![Radar Militar](radar-militar/src/public/images/2025-04-06_22-11.pngg)
-
 ## Descripción del Proyecto
 
 El Sistema de Radar Militar es una aplicación web desarrollada como proyecto académico para el curso de Matemáticas Discretas en Jala University. Esta aplicación simula un sistema de radar militar que permite identificar patrones de movimiento enemigo aplicando conceptos matemáticos discretos.
@@ -128,11 +126,6 @@ Este es un proyecto académico, pero las contribuciones son bienvenidas. Si dese
 ## Licencia
 
 Este proyecto es de código abierto y está disponible bajo la Licencia MIT.
-
-## Capturas de Pantalla
-
-![Radar en Funcionamiento](src/public/images/radar-screen.png)
-![Equipo del Proyecto](src/public/images/team-screen.png)
 
 ---
 
